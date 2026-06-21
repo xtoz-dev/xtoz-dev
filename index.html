@@ -2,302 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Portfolio</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{
-  width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  background:#000;
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
-  overflow:hidden;
-}
-
-/* Stars BG */
-canvas#bg{position:fixed;inset:0;z-index:0;}
-.glow-orb{
-  position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;
-}
-.g1{width:500px;height:500px;background:rgba(10,132,255,0.13);top:-120px;right:-100px;}
-.g2{width:400px;height:400px;background:rgba(191,90,242,0.11);bottom:0;left:-100px;}
-
-/* iPhone wrapper */
-.phone-wrap{
-  position:relative;z-index:1;
-  display:flex;align-items:center;justify-content:center;
-  height:100vh;
-}
-
-/* iPhone */
-.iphone{
-  width:393px;
-  height:852px;
-  border-radius:54px;
-  background:linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%);
-  border:1.5px solid rgba(255,255,255,0.16);
-  box-shadow:
-    0 0 0 7px #111118,
-    0 0 0 8.5px rgba(255,255,255,0.09),
-    0 60px 140px rgba(0,0,0,0.9),
-    0 0 100px rgba(10,132,255,0.07),
-    inset 0 0 40px rgba(255,255,255,0.02);
-  position:relative;
-  overflow:hidden;
-  transform-style:preserve-3d;
-  transition:transform 0.08s ease-out;
-  display:flex;flex-direction:column;
-}
-
-/* Liquid glass sheen */
-.iphone::before{
-  content:'';
-  position:absolute;top:0;left:0;right:0;height:50%;
-  background:linear-gradient(180deg,rgba(255,255,255,0.06) 0%,transparent 100%);
-  border-radius:54px 54px 0 0;
-  pointer-events:none;z-index:20;
-}
-
-/* Dynamic Island */
-.di{
-  position:absolute;top:13px;left:50%;transform:translateX(-50%);
-  width:122px;height:35px;
-  background:#000;border-radius:19px;z-index:50;
-  cursor:pointer;
-  transition:width .35s cubic-bezier(.34,1.56,.64,1),height .35s cubic-bezier(.34,1.56,.64,1),border-radius .35s;
-  display:flex;align-items:center;justify-content:center;gap:8px;overflow:hidden;
-}
-.di.open{width:310px;height:78px;border-radius:30px;}
-.di-cam{width:10px;height:10px;border-radius:50%;background:#1a1a1a;border:1px solid #333;flex-shrink:0;}
-.di-mic{width:4px;height:4px;border-radius:50%;background:#1a1a1a;flex-shrink:0;}
-.di-content{
-  display:none;flex:1;align-items:center;gap:10px;padding:0 10px 0 4px;
-  color:rgba(255,255,255,0.9);font-size:11.5px;font-weight:500;
-}
-.di.open .di-content{display:flex;}
-.di-bars{display:flex;gap:2px;align-items:flex-end;}
-.di-bars span{
-  width:3px;border-radius:2px;
-  background:linear-gradient(0deg,#1db954,#00d4aa);
-  animation:bar .7s ease-in-out infinite alternate;
-}
-.di-bars span:nth-child(1){height:8px;animation-delay:0s;}
-.di-bars span:nth-child(2){height:15px;animation-delay:.12s;}
-.di-bars span:nth-child(3){height:10px;animation-delay:.24s;}
-.di-bars span:nth-child(4){height:18px;animation-delay:.06s;}
-.di-bars span:nth-child(5){height:12px;animation-delay:.18s;}
-@keyframes bar{to{height:4px;}}
-.di-track{flex:1;}
-.di-track p{font-size:12px;font-weight:600;color:#fff;margin-bottom:1px;}
-.di-track span{font-size:10px;color:rgba(255,255,255,0.5);}
-.di-sp-icon{width:36px;height:36px;border-radius:9px;background:#1db954;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-
-/* Status bar */
-.status{
-  height:56px;display:flex;align-items:flex-start;justify-content:space-between;
-  padding:16px 28px 0;flex-shrink:0;position:relative;z-index:10;
-}
-.status-time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.02em;}
-.status-right{display:flex;align-items:center;gap:6px;padding-top:1px;}
-.sig{display:flex;gap:1.5px;align-items:flex-end;}
-.sig span{background:#fff;border-radius:1px;width:3px;}
-.sig span:nth-child(1){height:5px;opacity:.4;}
-.sig span:nth-child(2){height:8px;opacity:.6;}
-.sig span:nth-child(3){height:11px;}
-.bat{
-  width:24px;height:11px;border:1.5px solid rgba(255,255,255,0.5);border-radius:2.5px;
-  position:relative;display:flex;align-items:center;padding:1.5px;
-}
-.bat::after{
-  content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);
-  width:2.5px;height:5px;background:rgba(255,255,255,0.5);border-radius:0 1px 1px 0;
-}
-.bat-fill{height:100%;background:#fff;border-radius:1px;width:72%;}
-.wifi-svg{width:15px;height:15px;}
-
-/* Screen scroll */
-.screen{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  scrollbar-width:none;padding:0 0 110px;
-}
-.screen::-webkit-scrollbar{display:none;}
-
-/* Hero */
-.hero{
-  padding:28px 24px 20px;text-align:center;
-}
-.avatar-wrap{
-  width:86px;height:86px;margin:0 auto 14px;position:relative;
-  background:linear-gradient(135deg,#0a84ff,#bf5af2,#ff375f);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 8px 32px rgba(10,132,255,0.45);
-  border:2.5px solid rgba(255,255,255,0.18);
-}
-.avatar-inner{
-  width:76px;height:76px;border-radius:50%;
-  background:linear-gradient(135deg,#1c1c3a,#0a0a1a);
-  display:flex;align-items:center;justify-content:center;
-  font-size:32px;
-}
-.online{
-  position:absolute;bottom:3px;right:3px;
-  width:17px;height:17px;border-radius:50%;
-  background:#30d158;border:2.5px solid #0d0d1a;
-  box-shadow:0 0 8px rgba(48,209,88,0.7);
-}
-.hero-name{
-  font-size:24px;font-weight:700;letter-spacing:-0.04em;
-  background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,0.6));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:4px;
-}
-.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);font-weight:400;letter-spacing:0.01em;margin-bottom:16px;}
-.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
-.tag{
-  padding:5px 12px;border-radius:20px;
-  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);
-  font-size:11.5px;color:rgba(255,255,255,0.7);font-weight:500;letter-spacing:0.01em;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-}
-
-/* Section label */
-.lbl{
-  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;
-  color:rgba(255,255,255,0.35);padding:0 22px;margin:18px 0 10px;
-}
-
-/* Glass card */
-.card{
-  margin:0 16px 10px;
-  background:rgba(255,255,255,0.055);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:22px;
-  backdrop-filter:blur(30px) saturate(180%);
-  -webkit-backdrop-filter:blur(30px) saturate(180%);
-  overflow:hidden;
-  position:relative;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
-}
-
-/* APP GRID */
-.app-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:18px 10px;padding:18px 14px;
-}
-.app{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;}
-.icon{
-  width:62px;height:62px;border-radius:15px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 18px rgba(0,0,0,0.5);
-  position:relative;overflow:hidden;
-  transition:transform .18s cubic-bezier(.34,1.56,.64,1);
-  flex-shrink:0;
-  text-decoration:none;
-}
-.icon::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:48%;
-  background:linear-gradient(180deg,rgba(255,255,255,0.2) 0%,transparent 100%);
-  pointer-events:none;border-radius:15px 15px 0 0;
-}
-.icon:hover{transform:scale(1.15);}
-.icon:active{transform:scale(0.9);}
-.icon svg{position:relative;z-index:1;}
-.app-lbl{font-size:10px;color:rgba(255,255,255,0.85);font-weight:500;letter-spacing:0.01em;text-align:center;}
-
-/* Badge */
-.bdg{
-  position:absolute;top:-4px;right:-4px;
-  background:#ff3b30;color:#fff;font-size:9px;font-weight:700;
-  width:16px;height:16px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  border:2px solid #0d0d1a;z-index:3;
-}
-
-/* Music widget */
-.music{
-  margin:0 16px 10px;
-  background:linear-gradient(135deg,rgba(29,185,84,0.12),rgba(10,132,255,0.08));
-  border:1px solid rgba(255,255,255,0.1);border-radius:22px;
-  padding:14px 16px;display:flex;align-items:center;gap:12px;
-  cursor:pointer;transition:background .2s;position:relative;overflow:hidden;
-}
-.music::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
-}
-.music:hover{background:linear-gradient(135deg,rgba(29,185,84,0.18),rgba(10,132,255,0.13));}
-.music-art{
-  width:46px;height:46px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,#1db954,#0a84ff);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 14px rgba(0,0,0,0.4);
-}
-.music-info{flex:1;min-width:0;}
-.music-title{font-size:13.5px;font-weight:600;color:#fff;margin-bottom:2px;}
-.music-sub{font-size:11px;color:rgba(255,255,255,0.45);}
-.prog{height:2.5px;background:rgba(255,255,255,0.12);border-radius:2px;margin-top:8px;overflow:hidden;}
-.prog-bar{
-  height:100%;border-radius:2px;
-  background:linear-gradient(90deg,#1db954,#0a84ff);
-  animation:prog 90s linear infinite;
-}
-@keyframes prog{from{width:0%;}to{width:100%;}}
-.play-btn{
-  width:34px;height:34px;border-radius:50%;
-  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  flex-shrink:0;transition:background .15s;
-}
-.play-btn:hover{background:rgba(255,255,255,0.18);}
-
-/* Dock */
-.dock{
-  position:absolute;bottom:14px;left:18px;right:18px;
-  height:86px;
-  background:rgba(255,255,255,0.09);
-  backdrop-filter:blur(50px) saturate(200%);
-  -webkit-backdrop-filter:blur(50px) saturate(200%);
-  border:1px solid rgba(255,255,255,0.14);
-  border-radius:28px;
-  display:flex;align-items:center;justify-content:space-around;
-  padding:0 18px;
-  box-shadow:0 4px 30px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.12);
-  z-index:30;
-}
-.dock .icon{width:54px;height:54px;border-radius:13px;}
-
-/* Home bar */
-.home-bar{
-  position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
-  width:134px;height:5px;
-  background:rgba(255,255,255,0.28);border-radius:3px;z-index:31;
-}
-
-/* Toast */
-.toast{
-  position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);
-  background:rgba(28,28,36,0.92);backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,0.14);border-radius:14px;
-  padding:10px 18px;font-size:13px;font-weight:500;color:#fff;
-  z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);
-  white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.6);
-}
-.toast.show{transform:translateX(-50%) translateY(0);}
-
-/* Stat pills */
-.stats{display:flex;gap:8px;padding:0 16px 10px;}
-.stat{
-  flex:1;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.1);
-  border-radius:16px;padding:12px 8px;text-align:center;
-}
-.stat-n{font-size:19px;font-weight:700;letter-spacing:-0.03em;
-  background:linear-gradient(135deg,#fff,rgba(255,255,255,0.6));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.stat-l{font-size:10px;color:rgba(255,255,255,0.35);font-weight:500;margin-top:2px;letter-spacing:0.03em;}
-</style>
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;overflow:hidden;}canvas#bg{position:fixed;inset:0;z-index:0;}.glow-orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;}.g1{width:500px;height:500px;background:rgba(10,132,255,0.13);top:-120px;right:-100px;}.g2{width:400px;height:400px;background:rgba(191,90,242,0.11);bottom:0;left:-100px;}.phone-wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;height:100vh;}.iphone{width:393px;height:852px;border-radius:54px;background:linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%);border:1.5px solid rgba(255,255,255,0.16);box-shadow:0 0 0 7px #111118,0 0 0 8.5px rgba(255,255,255,0.09),0 60px 140px rgba(0,0,0,0.9),0 0 100px rgba(10,132,255,0.07),inset 0 0 40px rgba(255,255,255,0.02);position:relative;overflow:hidden;transform-style:preserve-3d;transition:transform .08s ease-out;display:flex;flex-direction:column;}.iphone::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.06) 0%,transparent 100%);border-radius:54px 54px 0 0;pointer-events:none;z-index:20;}.di{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:122px;height:35px;background:#000;border-radius:19px;z-index:50;cursor:pointer;transition:width .35s cubic-bezier(.34,1.56,.64,1),height .35s cubic-bezier(.34,1.56,.64,1),border-radius .35s;display:flex;align-items:center;justify-content:center;gap:8px;overflow:hidden;}.di.open{width:310px;height:78px;border-radius:30px;}.di-cam{width:10px;height:10px;border-radius:50%;background:#1a1a1a;border:1px solid #333;flex-shrink:0;}.di-mic{width:4px;height:4px;border-radius:50%;background:#1a1a1a;flex-shrink:0;}.di-content{display:none;flex:1;align-items:center;gap:10px;padding:0 10px 0 4px;color:rgba(255,255,255,0.9);font-size:11.5px;font-weight:500;}.di.open .di-content{display:flex;}.di-bars{display:flex;gap:2px;align-items:flex-end;}.di-bars span{width:3px;border-radius:2px;background:linear-gradient(0deg,#1db954,#00d4aa);animation:bar .7s ease-in-out infinite alternate;}.di-bars span:nth-child(1){height:8px;animation-delay:0s;}.di-bars span:nth-child(2){height:15px;animation-delay:.12s;}.di-bars span:nth-child(3){height:10px;animation-delay:.24s;}.di-bars span:nth-child(4){height:18px;animation-delay:.06s;}.di-bars span:nth-child(5){height:12px;animation-delay:.18s;}@keyframes bar{to{height:4px;}}.di-track{flex:1;}.di-track p{font-size:12px;font-weight:600;color:#fff;margin-bottom:1px;}.di-track span{font-size:10px;color:rgba(255,255,255,0.5);}.di-sp-icon{width:36px;height:36px;border-radius:9px;background:#1db954;display:flex;align-items:center;justify-content:center;flex-shrink:0;}.status{height:56px;display:flex;align-items:flex-start;justify-content:space-between;padding:16px 28px 0;flex-shrink:0;position:relative;z-index:10;}.status-time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-.02em;}.status-right{display:flex;align-items:center;gap:6px;padding-top:1px;}.sig{display:flex;gap:1.5px;align-items:flex-end;}.sig span{background:#fff;border-radius:1px;width:3px;}.sig span:nth-child(1){height:5px;opacity:.4;}.sig span:nth-child(2){height:8px;opacity:.6;}.sig span:nth-child(3){height:11px;}.bat{width:24px;height:11px;border:1.5px solid rgba(255,255,255,0.5);border-radius:2.5px;position:relative;display:flex;align-items:center;padding:1.5px;}.bat::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:2.5px;height:5px;background:rgba(255,255,255,0.5);border-radius:0 1px 1px 0;}.bat-fill{height:100%;background:#fff;border-radius:1px;width:72%;}.wifi-svg{width:15px;height:15px;}.screen{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:0 0 110px;}.screen::-webkit-scrollbar{display:none;}.hero{padding:28px 24px 20px;text-align:center;}.avatar-wrap{width:86px;height:86px;margin:0 auto 14px;position:relative;background:linear-gradient(135deg,#0a84ff,#bf5af2,#ff375f);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(10,132,255,0.45);border:2.5px solid rgba(255,255,255,0.18);}.avatar-inner{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#1c1c3a,#0a0a1a);display:flex;align-items:center;justify-content:center;font-size:32px;}.online{position:absolute;bottom:3px;right:3px;width:17px;height:17px;border-radius:50%;background:#30d158;border:2.5px solid #0d0d1a;box-shadow:0 0 8px rgba(48,209,88,0.7);}.hero-name{font-size:24px;font-weight:700;letter-spacing:-.04em;background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,0.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);font-weight:400;letter-spacing:.01em;margin-bottom:16px;}.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}.tag{padding:5px 12px;border-radius:20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);font-size:11.5px;color:rgba(255,255,255,0.7);font-weight:500;letter-spacing:.01em;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}.lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.35);padding:0 22px;margin:18px 0 10px;}.card{margin:0 16px 10px;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.1);border-radius:22px;backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);overflow:hidden;position:relative;}.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);}.app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 10px;padding:18px 14px;}.app{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;}.icon{width:54px;height:54px;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.5);position:relative;overflow:hidden;transition:transform .18s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;text-decoration:none;}.icon::after{content:'';position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,rgba(255,255,255,0.2) 0%,transparent 100%);pointer-events:none;border-radius:15px 15px 0 0;}.icon:hover{transform:scale(1.15);}.icon:active{transform:scale(0.9);}.icon svg{position:relative;z-index:1;}.app-lbl{font-size:10px;color:rgba(255,255,255,0.85);font-weight:500;letter-spacing:.01em;text-align:center;}.bdg{position:absolute;top:-4px;right:-4px;background:#ff3b30;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #0d0d1a;z-index:3;}.music{margin:0 16px 10px;background:linear-gradient(135deg,rgba(29,185,84,0.12),rgba(10,132,255,0.08));border:1px solid rgba(255,255,255,0.1);border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .2s;position:relative;overflow:hidden;}.music::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);}.music:hover{background:linear-gradient(135deg,rgba(29,185,84,0.18),rgba(10,132,255,0.13));}.music-art{width:46px;height:46px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1db954,#0a84ff);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.4);}.music-info{flex:1;min-width:0;}.music-title{font-size:13.5px;font-weight:600;color:#fff;margin-bottom:2px;}.music-sub{font-size:11px;color:rgba(255,255,255,0.45);}.prog{height:2.5px;background:rgba(255,255,255,0.12);border-radius:2px;margin-top:8px;overflow:hidden;}.prog-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,#1db954,#0a84ff);animation:prog 90s linear infinite;}@keyframes prog{from{width:0%;}to{width:100%;}}.play-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s;}.play-btn:hover{background:rgba(255,255,255,0.18);}.dock{position:absolute;bottom:14px;left:18px;right:18px;height:86px;background:rgba(255,255,255,0.09);backdrop-filter:blur(50px) saturate(200%);-webkit-backdrop-filter:blur(50px) saturate(200%);border:1px solid rgba(255,255,255,0.14);border-radius:28px;display:flex;align-items:center;justify-content:space-around;padding:0 18px;box-shadow:0 4px 30px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.12);z-index:30;}.dock .icon{width:54px;height:54px;border-radius:13px;}.home-bar{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(255,255,255,0.28);border-radius:3px;z-index:31;}.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);background:rgba(28,28,36,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 18px;font-size:13px;font-weight:500;color:#fff;z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.6);}.toast.show{transform:translateX(-50%) translateY(0);}.stats{display:flex;gap:8px;padding:0 16px 10px;}.stat{flex:1;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:12px 8px;text-align:center;}.stat-n{font-size:19px;font-weight:700;letter-spacing:-.03em;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.stat-l{font-size:10px;color:rgba(255,255,255,0.35);font-weight:500;margin-top:2px;letter-spacing:.03em;}</style>
 </head>
 <body>
 
@@ -310,8 +17,7 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
 <div class="phone-wrap">
 <div class="iphone" id="ph">
 
-  <!-- Dynamic Island -->
-  <div class="di" id="di" onclick="toggleDI()">
+  <div class="di" id="di" onclick="_0x2b4f(0x1)">
     <div class="di-cam"></div>
     <div class="di-mic"></div>
     <div class="di-content">
@@ -328,12 +34,10 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
     </div>
   </div>
 
-  <!-- Status -->
   <div class="status">
     <span class="status-time" id="clk">9:41</span>
     <div class="status-right">
       <div class="sig"><span></span><span></span><span></span></div>
-      <!-- wifi -->
       <svg class="wifi-svg" viewBox="0 0 24 24" fill="none">
         <path d="M5 12.55a11 11 0 0 1 14.08 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
         <path d="M1.42 9a16 16 0 0 1 21.16 0" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"/>
@@ -344,10 +48,8 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
     </div>
   </div>
 
-  <!-- Screen -->
   <div class="screen">
 
-    <!-- Hero -->
     <div class="hero">
       <div class="avatar-wrap">
         <div class="avatar-inner">👤</div>
@@ -363,18 +65,15 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats">
       <div class="stat"><div class="stat-n">12</div><div class="stat-l">PROJECTS</div></div>
       <div class="stat"><div class="stat-n">4.2k</div><div class="stat-l">FOLLOWERS</div></div>
       <div class="stat"><div class="stat-n">∞</div><div class="stat-l">VIBES</div></div>
     </div>
 
-    <!-- Music -->
     <div class="lbl">Now Playing</div>
-    <div class="music" onclick="toggleMusic()">
+    <div class="music" onclick="_0x2b4f(0x2)">
       <div class="music-art">
-        <!-- Spotify logo -->
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#fff"/><path d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75c-.5.15-1-.15-1.15-.6-.15-.5.15-1 .6-1.15 3.55-1.05 9.4-.85 13.1 1.35.45.25.6.85.35 1.3-.25.35-.85.5-1.3.25zm-.1 2.8c-.25.4-.75.5-1.15.25-2.65-1.6-6.65-2.1-9.75-1.15-.4.1-.85-.1-.95-.5-.1-.4.1-.85.5-.95 3.55-1.1 7.95-.55 10.95 1.35.4.25.5.75.4 1zm-1.3 2.7c-.2.35-.6.45-.95.25-2.3-1.4-5.2-1.75-8.6-.95-.35.1-.7-.15-.8-.5-.1-.35.15-.7.5-.8 3.75-.85 6.95-.5 9.5 1.1.35.2.45.6.35.9z" fill="#1DB954"/></svg>
       </div>
       <div class="music-info">
@@ -387,12 +86,10 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
       </div>
     </div>
 
-    <!-- Socials Grid -->
     <div class="lbl">Socials</div>
     <div class="card">
       <div class="app-grid">
 
-        <!-- Instagram -->
         <div class="app">
           <a href="https://instagram.com/ole_470" target="_blank" class="icon" style="background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);">
             <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
@@ -404,17 +101,15 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
           <span class="app-lbl">Instagram</span>
         </div>
 
-        <!-- Discord -->
         <div class="app">
           <a href="https://discord.com/users/ole40" target="_blank" class="icon" style="background:#5865f2;">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-              <path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z" fill="#fff"/>
+              <path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07 Ramadan.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z" fill="#fff"/>
             </svg>
           </a>
           <span class="app-lbl">Discord</span>
         </div>
 
-        <!-- GitHub -->
         <div class="app">
           <a href="https://github.com/yourhandle" target="_blank" class="icon" style="background:linear-gradient(135deg,#24292e,#1a1f24);">
             <svg width="34" height="34" viewBox="0 0 24 24" fill="#fff">
@@ -424,7 +119,6 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
           <span class="app-lbl">GitHub</span>
         </div>
 
-        <!-- YouTube -->
         <div class="app">
           <a href="https://youtube.com/@yourhandle" target="_blank" class="icon" style="background:#ff0000;">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
@@ -435,7 +129,6 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
           <span class="app-lbl">YouTube</span>
         </div>
 
-        <!-- Spotify -->
         <div class="app">
           <a href="https://open.spotify.com/user/yourhandle" target="_blank" class="icon" style="background:#191414;">
             <svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#1db954"/><path d="M16.5 10.5c-2.7-1.6-7.2-1.75-9.8-.97a.75.75 0 1 1-.43-1.44c2.97-.9 7.9-.72 11.02 1.12a.75.75 0 0 1-.79 1.29zm-.12 2.65a.63.63 0 0 1-.86.2c-2.24-1.38-5.66-1.77-8.3-.97a.624.624 0 1 1-.36-1.19c3.03-.92 6.8-.47 9.32 1.1a.63.63 0 0 1 .2.86zm-1 2.54a.5.5 0 0 1-.69.17c-1.96-1.2-4.42-1.47-7.32-.8a.5.5 0 1 1-.22-.97c3.18-.73 5.9-.41 8.06.92a.5.5 0 0 1 .17.68z" fill="#fff"/></svg>
@@ -443,7 +136,6 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
           <span class="app-lbl">Spotify</span>
         </div>
 
-        <!-- TikTok -->
         <div class="app">
           <a href="https://tiktok.com/@yourhandle" target="_blank" class="icon" style="background:#010101;">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
@@ -455,7 +147,6 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
           <span class="app-lbl">TikTok</span>
         </div>
 
-        <!-- Telegram -->
         <div class="app">
           <a href="https://t.me/yourhandle" target="_blank" class="icon" style="background:linear-gradient(135deg,#2ca5e0,#1a8ecf);">
             <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
@@ -466,7 +157,6 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
           <span class="app-lbl">Telegram</span>
         </div>
 
-        <!-- X / Twitter -->
         <div class="app">
           <a href="https://x.com/yourhandle" target="_blank" class="icon" style="background:#000;border:1px solid rgba(255,255,255,0.12);">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff">
@@ -479,11 +169,9 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
       </div>
     </div>
 
-    <!-- Contact -->
     <div class="lbl">Contact</div>
     <div class="card" style="padding:4px 16px;">
-
-      <a href="mailto:you@example.com" style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.06);text-decoration:none;color:#fff;cursor:pointer;" onclick="copyEmail(event)">
+      <a href="mailto:you@example.com" style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.06);text-decoration:none;color:#fff;cursor:pointer;" onclick="_0x2b4f(0x3)">
         <div class="icon" style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0a84ff,#0066cc);flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#fff" stroke-width="1.8"/><path d="M22 6l-10 7L2 6" stroke="#fff" stroke-width="1.8"/></svg>
         </div>
@@ -493,10 +181,9 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
         </div>
         <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M1 1l6 5.5L1 12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/></svg>
       </a>
-
       <a href="https://discord.gg/yourserver" target="_blank" style="display:flex;align-items:center;gap:12px;padding:13px 0;text-decoration:none;color:#fff;">
         <div class="icon" style="width:38px;height:38px;border-radius:10px;background:#5865f2;flex-shrink:0;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/></svg>
         </div>
         <div style="flex:1;">
           <div style="font-size:13.5px;font-weight:500;">Discord</div>
@@ -504,152 +191,41 @@ canvas#bg{position:fixed;inset:0;z-index:0;}
         </div>
         <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M1 1l6 5.5L1 12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/></svg>
       </a>
-
     </div>
 
     <div style="height:14px;"></div>
+  </div>
 
-  </div><!-- /screen -->
-
-  <!-- Dock -->
   <div class="dock">
-    <!-- Phone -->
     <div class="app">
-      <div class="icon" style="background:linear-gradient(135deg,#30d158,#25a244);cursor:pointer;" onclick="showToast('📞 Call me maybe!')">
+      <div class="icon" style="background:linear-gradient(135deg,#30d158,#25a244);cursor:pointer;" onclick="_0x2b4f(0x4)">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.33 1.86.52 2.81.7A2 2 0 0 1 22 16.92z" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
     </div>
-    <!-- Instagram dock -->
     <div class="app">
       <a href="https://instagram.com/yourhandle" target="_blank" class="icon" style="background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-          <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="#fff" stroke-width="1.8"/>
-          <circle cx="12" cy="12" r="4.5" stroke="#fff" stroke-width="1.8"/>
-          <circle cx="17.5" cy="6.5" r="1" fill="#fff"/>
-        </svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5.5" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#fff" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg>
       </a>
     </div>
-    <!-- Discord dock -->
     <div class="app">
       <a href="https://discord.gg/yourserver" target="_blank" class="icon" style="background:#5865f2;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/></svg>
       </a>
     </div>
-    <!-- Mail dock -->
     <div class="app">
-      <div class="icon" style="background:linear-gradient(135deg,#0a84ff,#0055cc);cursor:pointer;" onclick="copyEmail(event)">
+      <div class="icon" style="background:linear-gradient(135deg,#0a84ff,#0055cc);cursor:pointer;" onclick="_0x2b4f(0x3)">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#fff" stroke-width="1.8"/><path d="M22 6l-10 7L2 6" stroke="#fff" stroke-width="1.8"/></svg>
       </div>
     </div>
   </div>
 
-  <!-- Home bar -->
   <div class="home-bar"></div>
 
-</div><!-- /iphone -->
-</div><!-- /phone-wrap -->
+</div>
+</div>
 
 <script>
-// Clock
-function tick(){
-  const n=new Date();
-  document.getElementById('clk').textContent=
-    n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
-}
-tick();setInterval(tick,1000);
-
-// Dynamic Island
-let diOpen=false;
-function toggleDI(){
-  diOpen=!diOpen;
-  document.getElementById('di').classList.toggle('open',diOpen);
-}
-
-// Music
-let playing=false;
-const aud=document.getElementById('aud');
-function toggleMusic(){
-  if(!playing){
-    aud.volume=0.06;aud.play().catch(()=>{});playing=true;
-    document.getElementById('msub').textContent='▶ Playing • Tap to pause';
-    document.getElementById('playbtn').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-    if(!diOpen){document.getElementById('di').classList.add('open');diOpen=true;}
-  }else{
-    aud.pause();playing=false;
-    document.getElementById('msub').textContent='Chill Beats • Background Mix';
-    document.getElementById('playbtn').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>';
-  }
-}
-
-// Stars
-const cv=document.getElementById('bg');
-const cx=cv.getContext('2d');
-let W,H,pts=[];
-function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;initPts();}
-function initPts(){
-  pts=[];
-  for(let i=0;i<150;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.2,o:Math.random()*0.5+0.1,sp:Math.random()*0.4+0.1});
-}
-function drawBg(){
-  cx.clearRect(0,0,W,H);
-  // dark sky
-  const g=cx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,'#04040f');g.addColorStop(1,'#080818');
-  cx.fillStyle=g;cx.fillRect(0,0,W,H);
-  // stars
-  const t=Date.now()*0.0006;
-  pts.forEach(p=>{
-    p.o=0.1+0.5*Math.abs(Math.sin(t*p.sp+p.x));
-    cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    cx.fillStyle=`rgba(255,255,255,${p.o})`;cx.fill();
-  });
-  requestAnimationFrame(drawBg);
-}
-rsz();drawBg();
-window.addEventListener('resize',rsz);
-
-// Parallax tilt
-document.addEventListener('mousemove',e=>{
-  const rx=((e.clientY/window.innerHeight)-.5)*7;
-  const ry=((e.clientX/window.innerWidth)-.5)*8;
-  document.getElementById('ph').style.transform=`perspective(1200px) rotateX(${-rx}deg) rotateY(${ry}deg)`;
-  document.querySelector('.g1').style.transform=`translate(${ry*3}px,${rx*2}px)`;
-  document.querySelector('.g2').style.transform=`translate(${-ry*2}px,${-rx*2}px)`;
-});
-document.addEventListener('mouseleave',()=>{
-  document.getElementById('ph').style.transform='perspective(1200px) rotateX(0deg) rotateY(0deg)';
-});
-
-// Touch tilt
-let startX,startY;
-document.addEventListener('touchmove',e=>{
-  const t=e.touches[0];
-  const rx=((t.clientY/window.innerHeight)-.5)*5;
-  const ry=((t.clientX/window.innerWidth)-.5)*6;
-  document.getElementById('ph').style.transform=`perspective(1200px) rotateX(${-rx}deg) rotateY(${ry}deg)`;
-},{passive:true});
-
-// Toast
-function showToast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),2000);
-}
-
-// Copy email
-function copyEmail(e){
-  if(e)e.preventDefault();
-  navigator.clipboard.writeText('you@example.com').then(()=>showToast('📋 Email kopiert!')).catch(()=>showToast('📧 you@example.com'));
-}
-
-// Auto music on first interaction
-document.addEventListener('click',function once(){
-  aud.volume=0.06;aud.play().catch(()=>{});
-  playing=true;
-  document.getElementById('msub').textContent='▶ Playing • Tap to pause';
-  document.getElementById('playbtn').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-  document.removeEventListener('click',once);
-},{once:true});
+const _0x1a2b=["\x70\x61\x64\x53\x74\x61\x72\x74","\x74\x65\x78\x74\x43\x6f\x6e\x74\x65\x6e\x74","\x63\x6c\x6b","\x6f\x70\x65\x6e","\x63\x6c\x61\x73\x73\x4c\x69\x73\x74","\x64\x69","\x76\x6f\x6c\x75\x6d\x65","\x61\x75\x64","\x63\x61\x74\x63\x68","\x70\x6c\x61\x79","\x25e2\x20\x50\x6c\x61\x79\x69\x6e\x67\x20\x20\u2022\x20\x54\x61\x70\x20\x74\x6f\x20\x70\x61\x75\x73\x65","\x6d\x73\x75\x62","\x3c\x73\x76\x67\x20\x77\x69\x64\x74\x68\x3d\x22\x31\x34\x22\x20\x68\x65\x69\x67\x68\x74\x3d\x22\x31\x34\x22\x20\x76\x69\x65\x77\x42\x6f\x78\x3d\x22\x30\x20\x30\x20\x32\x34\x20\x32\x34\x22\x20\x66\x69\x6c\x6c\x3d\x22\x23\x66\x66\x66\x22\x3e\x3c\x72\x65\x63\x74\x20\x78\x3d\x22\x36\x22\x20\x79\x3d\x22\x34\x22\x20\x77\x69\x64\x74\x68\x3d\x22\x34\x22\x20\x68\x65\x69\x67\x68\x74\x3d\x22\x31\x36\x22\x2f\x3e\x3c\x72\x65\x63\x74\x20\x78\x3d\x22\x31\x34\x22\x20\x79\x3d\x22\x34\x22\x20\x77\x69\x64\x74\x68\x3d\x22\x34\x22\x20\x68\x65\x69\x67\x68\x74\x3d\x22\x31\x36\x22\x2f\x3e\x3c\x2f\x73\x76\x67\x3e","\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c","\x70\x6c\x61\x79\x62\x74\x6e","\x70\x61\x75\x73\x65","\x43\x68\x69\x6c\x6c\x20\x42\x65\x61\x74\x73\x20\u2022\x20\x42\x6a\x63\x6b\x67\x72\x6f\x75\x6e\x64\x20\x4d\x69\x78","\x3c\x73\x76\x67\x20\x77\x69\x64\x74\x68\x3d\x22\x31\x34\x22\x20\x68\x65\x69\x67\x68\x74\x3d\x22\x31\x34\x22\x20\x76\x69\x65\x77\x42\x6f\x78\x3d\x22\x30\x20\x30\x20\x32\x34\x20\x32\x34\x22\x20\x66\x69\x6c\x6c\x3d\x22\x23\x66\x66\x66\x22\x3e\x3c\x7a\x61\x74\x68\x20\x64\x3d\x22\x4d\x38\x20\x35\x76\x31\x34\x6c\x31\x31\x2d\x37\x7a\x22\x2f\x3e\x3c\x2f\x73\x76\x67\x3e","\x62\x67","\x32\x64","\x63\x72\x65\x61\x74\x65\x4c\x69\x6e\x65\x61\x72\x47\x72\x61\x64\x69\x65\x6e\x74","\x61\x64\x64\x43\x6f\x6c\x6f\x72\x53\x74\x6f\x70","\x66\x69\x6c\x6c\x53\x74\x79\x6c\x65","\x66\x69\x6c\x6c\x52\x65\x63\x74","\x61\x62\x73","\x73\x69\x6e","\x62\x65\x67\x69\x6e\x50\x61\x74\x68","\x61\x72\x63","\x66\x69\x6c\x6c","\x72\x65\x71\x75\x65\x73\x74\x41\x6e\x69\x6d\x61\x74\x69\x6f\x6e\x46\x72\x61\x6d\x65","\x72\x65\x73\x69\x7a\x65","\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72","\x70\x65\x72\x73\x70\x65\x63\x74\x69\x76\x65\x28\x31\x32\x30\x30\x70\x78\x29\x20\x72\x6f\x74\x61\x74\x65\x58\x28","\x64\x65\x67\x29\x20\x72\x6f\x74\x61\x74\x65\x59\x28","\x64\x65\x67\x29","\x73\x74\x79\x6c\x65","\x74\x72\x61\x6e\x73\x66\x6f\x72\x6d","\x70\x68","\x74\x72\x61\x6e\x73\x6c\x61\x74\x65\x28","\x70\x78\x2c","\x70\x78\x29","\x2e\x67\x31","\x71\x75\x65\x72\x79\x53\x65\x6c\x65\x63\x74\x6f\x72","\x2e\x67\x32","\x6d\x6f\x75\x73\x65\x6d\x6f\x76\x65","\x70\x65\x72\x73\x70\x65\x63\x74\x69\x76\x65\x28\x31\x32\x30\x30\x70\x78\x29\x20\x72\x6f\x74\x61\x74\x65\x58\x28\x30\x64\x65\x67\x29\x20\x72\x6f\x74\x61\x74\x65\x59\x28\x30\x64\x65\x67\x29","\x6d\x6f\x75\x73\x65\x6c\x65\x61\x76\x65","\x74\x6f\x75\x63\x68\x65\x73","\x74\x6f\x75\x63\x68\x6d\x6f\x76\x65","\x74\x6f\x61\x73\x74","\x73\x68\x6f\x77","\x72\x65\x6d\x6f\x76\x65","\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74","\x77\x72\x69\x74\x65\x54\x65\x78\x74","\x63\x6c\x69\x70\x62\x6f\x61\x72\x64","\x79\x6f\x75\x40\x65\x78\x61\x6d\x70\x6c\x65\x2e\x63\x6f\x6d","\x74\x68\x65\x6e","\x20\x45\x6d\x61\x69\x6c\x20\x6b\x6f\x70\x69\x65\x72\x74\x21","\x63\x6c\x69\x63\x6b","\x72\x65\x6d\x6f\x76\x65\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72"];function _0x2b4f(_0x3c1d){let _0x4e5a=false;if(_0x3c1d===0x1){_0x4e5a=!_0x4e5a;document.getElementById("di").classList.toggle("open",_0x4e5a);}if(_0x3c1d===0x2){const aud=document.getElementById("aud");if(!_0x4e5a){aud.volume=0.06;aud.play().catch(()=>{});_0x4e5a=true;document.getElementById("msub").textContent="▶ Playing \u2022 Tap to pause";document.getElementById("playbtn").innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';if(!_0x4e5a){document.getElementById("di").classList.add("open");_0x4e5a=true;}}else{aud.pause();_0x4e5a=false;document.getElementById("msub").textContent="Chill Beats \u2022 Background Mix";document.getElementById("playbtn").innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>';}}if(_0x3c1d===0x3){if(event)event.preventDefault();navigator.clipboard.writeText("you@example.com").then(()=>_0x5c2a("\ud83d\udccb Email kopiert!")).catch(()=>_0x5c2a("\ud83d\udce7 you@example.com"));}if(_0x3c1d===0x4){_0x5c2a("\ud83d\udcde Call me maybe!");}}function tick(){const n=new Date();document.getElementById("clk").textContent=n.getHours().toString().padStart(2,"0")+":"+n.getMinutes().toString().padStart(2,"0");}tick();setInterval(tick,1000);const cv=document.getElementById("bg");const cx=cv.getContext("2d");let W,H,pts=[];function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;initPts();}function initPts(){pts=[];for(let i=0;i<150;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.2,o:Math.random()*0.5+0.1,sp:Math.random()*0.4+0.1});}function drawBg(){cx.clearRect(0,0,W,H);const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#04040f");g.addColorStop(1,"#080818");cx.fillStyle=g;cx.fillRect(0,0,W,H);const t=Date.now()*0.0006;pts.forEach(p=>{p.o=0.1+0.5*Math.abs(Math.sin(t*p.sp+p.x));cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle=`rgba(255,255,255,${p.o})`;cx.fill();});requestAnimationFrame(drawBg);}rsz();drawBg();window.addEventListener("resize",rsz);document.addEventListener("mousemove",e=>{const rx=((e.clientY/window.innerHeight)-0.5)*7;const ry=((e.clientX/window.innerWidth)-0.5)*8;document.getElementById("ph").style.transform=`perspective(1200px) rotateX(${-rx}deg) rotateY(${ry}deg)`;document.querySelector(".g1").style.transform=`translate(${ry*3}px,${rx*2}px)`;document.querySelector(".g2").style.transform=`translate(${-ry*2}px,${-rx*2}px)`;});document.addEventListener("mouseleave",()=>{document.getElementById("ph").style.transform="perspective(1200px) rotateX(0deg) rotateY(0deg)";});document.addEventListener("touchmove",e=>{const t=e.touches[0];const rx=((t.clientY/window.innerHeight)-0.5)*5;const ry=((t.clientX/window.innerWidth)-0.5)*6;document.getElementById("ph").style.transform=`perspective(1200px) rotateX(${-rx}deg) rotateY(${ry}deg)`;},{passive:true});function _0x5c2a(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2000);}document.addEventListener("click",function once(){const aud=document.getElementById("aud");aud.volume=0.06;aud.play().catch(()=>{});document.getElementById("msub").textContent="\u25b6 Playing \u2022 Tap to pause";document.getElementById("playbtn").innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';document.removeEventListener("click",once);},{once:true});
 </script>
 </body>
 </html>
